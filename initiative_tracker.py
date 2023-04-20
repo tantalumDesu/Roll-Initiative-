@@ -1,8 +1,8 @@
 import time
 from datetime import datetime
 
-def title():
-    title = "Roll Initiative"
+def title(title):
+    title = f"{title}"
     spin_chars = ['/', '-', '\\', '!']
     print("")
     for i, letter in enumerate(title):
@@ -14,7 +14,6 @@ def title():
         print(f"\r{title}{spin_char}", end="")
         time.sleep(0.05)
     print("")
-
 
 def enumerateplayers(players):
     output=""
@@ -53,13 +52,11 @@ def add_player(players, current_player_index):
                 if another=="y":
                     break
                 elif another=="n":
-                    print("")
                     if len(players+new_combatant)<2:
-                        print("Not enough combatants!")
+                        title("Not enough combatants")
                         continue
                     print("Combatants to add:")
-                    for i, (v,k) in enumerate(new_combatant):
-                        print(f"{i+1} {v}: {k}")
+                    enumerateplayers(new_combatant)
                     while True:
                         add=input(f"\nAdd to combatant list? y/n (r)emove: ")
                         try:
@@ -76,7 +73,9 @@ def add_player(players, current_player_index):
                                     players.sort(key=lambda i:i[1], reverse=True)
                                     return players, current_player_index
                             elif add=="n":
-                                return players, current_player_index
+                                if len(players)>0:
+                                    return players, current_player_index
+                                else: title("No combatants"); break
                             elif add=="r":
                                 new_combatant=remove_player(new_combatant)
                                 print("Combatants to add:")
@@ -105,6 +104,7 @@ def remove_player(players):
             print("Not a valid selection\n")
 
 def init_order(players, current_player_index):
+    title("Fight!")
     print("\nCombatants:")
     enumerateplayers(players)
     while True:
@@ -112,7 +112,7 @@ def init_order(players, current_player_index):
             current_player_index = len(players)-1
         next_player_index = (current_player_index + 1) % len(players)
         if next_player_index == current_player_index:
-            print("\nCombat is over!")
+            title("Combat is over")
             return
         print(f"\nCurrent turn: {players[current_player_index][0]}")
         print(f"\nNext player: {players[next_player_index][0]}")
@@ -139,7 +139,7 @@ def init_order(players, current_player_index):
             continue
 
 while True:
-    title()
+    title("Roll Initiative")
     players=[]
     current_player_index=0
     players, current_player_index = add_player(players, current_player_index)
