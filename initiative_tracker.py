@@ -104,28 +104,34 @@ def remove_player(players):
             print("Not a valid selection\n")
 
 def init_order(players, current_player_index):
-    title("Fight!")
+    title("    Fight!")
     print("\nCombatants:")
     enumerateplayers(players)
+    round=1
     while True:
-        if current_player_index >= len(players):
-            current_player_index = len(players)-1
         next_player_index = (current_player_index + 1) % len(players)
         if next_player_index == current_player_index:
             title("Combat is over")
             return
+        title(f"Round {round}")
         print(f"\nCurrent turn: {players[current_player_index][0]}")
-        print(f"\nNext player: {players[next_player_index][0]}")
+        print(f"\n{players[next_player_index][0]} is next.")
         try:
             next = input("\nPress enter for next combatant\nOr (r)emove, (a)dd or e(x)it: ")
             if next == "":
+                round+=1
                 current_player_index += 1
                 if current_player_index >= len(players):
                     current_player_index = 0
             elif next == "x":
                 return
             elif next == "r":
+                now=players[current_player_index]
                 players=remove_player(players)
+                if current_player_index >= len(players):
+                    current_player_index = len(players)-1
+                if now!=players[current_player_index]:
+                    round+=1
                 print("\nCombatants:")
                 enumerateplayers(players)
                 continue
