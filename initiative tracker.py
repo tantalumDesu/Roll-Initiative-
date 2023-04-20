@@ -23,7 +23,7 @@ def enumerateplayers(players):
         output+=f"{i+1} {v}: {k}\n"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"{timestamp}\n{output}\n"
-    with open("initiative log.txt", "a") as log_file:
+    with open("initiative_log.txt", "a") as log_file:
         log_file.write(log_entry)
     return output
 
