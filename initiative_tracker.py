@@ -1,18 +1,16 @@
 import time
 from datetime import datetime
 
-def title(title):
-    title = f"{title}"
+def animated(animated):
+    animated = f"{animated}"
     spin_chars = ['/', '-', '\\', '!']
     print("")
-    for i, letter in enumerate(title):
+    for i, letter in enumerate(animated):
         spin_char = spin_chars[i % len(spin_chars)]
-        print(f"\r{title[:i+1]}{spin_char}", end="", flush=True)
+        print(f"\r\033[31m{animated[:i+1]}\033[31m{spin_char}\033[0m", end="", flush=True)
         time.sleep(0.05)
-    for i in range(4):
-        spin_char = spin_chars[i % len(spin_chars)]
-        print(f"\r{title}{spin_char}", end="")
-        time.sleep(0.05)
+    print(f"\r\033[31m{animated}\033[31m!\033[0m", end="")
+    time.sleep(0.5)
     print("")
 
 def enumerateplayers(players):
@@ -36,57 +34,61 @@ def add_player(players, current_player_index):
         if new_combatant!=[]:
             print("\nNew combatants: ")
             enumerateplayers(new_combatant)
-        name=input("\nCombatant name: ").capitalize()
+        name=input("\nCombatant name: ").title()
         if name in [i[0] for i in players] or name in [i[0] for i in new_combatant]:
             print("Use a unique name")              
             continue
         try:
             init=int(input("Inititive: "))   
         except (ValueError, IndexError):
-            print("Initiative must be a number")
+            print("Initiative must be an integer")
             continue
-        new_combatant.append((name.capitalize(), init))
+        new_combatant.append((name.title(), init))
+        print("")
+        enumerateplayers(new_combatant)
         while True:
             try:
-                another=input("\nAdd another? y/n: ")
-                if another=="y":
-                    break
-                elif another=="n":
-                    if len(players+new_combatant)<2:
-                        title("Not enough combatants")
+                if len(new_combatant+players)>=2:
+                    another=input("\nAdd another combatant? y/n\nor (r)emove?: ")
+                    if another=="y":
+                        break
+                    elif another=="r":
+                        new_combatant=remove_player(new_combatant)
+                        if new_combatant!=[]:
+                            print("Combatants to add:")
+                            enumerateplayers(new_combatant)
                         continue
-                    print("Combatants to add:")
-                    enumerateplayers(new_combatant)
-                    while True:
-                        add=input(f"\nAdd to combatant list? y/n (r)emove: ")
-                        try:
-                            if add=="y":
-                                print("")
-                                if players!=[]:
-                                    now=players[current_player_index]
-                                    players.extend(new_combatant)
-                                    players.sort(key=lambda i:i[1], reverse=True)
-                                    current_player_index=players.index(now)
-                                    return players, current_player_index
-                                else: 
-                                    players.extend(new_combatant)
-                                    players.sort(key=lambda i:i[1], reverse=True)
-                                    return players, current_player_index
-                            elif add=="n":
-                                if len(players)>0:
-                                    return players, current_player_index
-                                else: title("No combatants"); break
-                            elif add=="r":
-                                new_combatant=remove_player(new_combatant)
-                                print("Combatants to add:")
-                                enumerateplayers(new_combatant)
-                                continue
-                            else: raise ValueError
-                        except ValueError:
-                            print("Invalid input. Choose 'y', 'n', or 'r'.")
-                else: raise ValueError
+                    elif another=="n":
+                        print("\nCombatants to add:")
+                        enumerateplayers(new_combatant)
+                        while True:
+                            if players!=[]:
+                                add=input("\nAdd to combat? y/n?: ")
+                            else: add=input("\nBegin combat? y/n?: ")
+                            try:
+                                if add=="y":
+                                    print("")
+                                    if players!=[]:
+                                        now=players[current_player_index]
+                                        players.extend(new_combatant)
+                                        players.sort(key=lambda i:i[1], reverse=True)
+                                        current_player_index=players.index(now)
+                                        return players, current_player_index
+                                    else: 
+                                        players.extend(new_combatant)
+                                        players.sort(key=lambda i:i[1], reverse=True)
+                                        return players, current_player_index
+                                elif add=="n":
+                                    if players!=[]:
+                                        return players, current_player_index
+                                    else:print(""); enumerateplayers(new_combatant);break
+                                else: raise ValueError
+                            except ValueError:
+                                print("Invalid input. Choose 'y' or 'n'")
+                    else: raise ValueError
+                else: print("\nAdd another combatant"); break
             except ValueError:
-                print("Choose 'y' or 'n'")
+                print("Choose 'y', 'n', or 'r")
 
 def remove_player(players):
     print("\nCombatants to remove:")
@@ -104,18 +106,18 @@ def remove_player(players):
             print("Not a valid selection\n")
 
 def init_order(players, current_player_index):
-    title("    Fight!")
+    animated("    Fight!")
     print("\nCombatants:")
     enumerateplayers(players)
     round=1
     while True:
         next_player_index = (current_player_index + 1) % len(players)
         if next_player_index == current_player_index:
-            title("Combat is over")
+            animated("Combat is over")
             return
-        title(f"Round {round}")
-        print(f"\nCurrent turn: {players[current_player_index][0]}")
-        print(f"\n{players[next_player_index][0]} is next.")
+        animated(f"Round {round}")
+        print(f"\n\033[92mCurrent turn: \033[92m{players[current_player_index][0]}\033[0m")
+        print(f"\n\033[38;5;208m{players[next_player_index][0]} \033[38;5;208mis next.\033[0m")
         try:
             next = input("\nPress enter for next combatant\nOr (r)emove, (a)dd or e(x)it: ")
             if next == "":
@@ -145,7 +147,7 @@ def init_order(players, current_player_index):
             continue
 
 while True:
-    title("Roll Initiative")
+    animated("Roll Initiative")
     players=[]
     current_player_index=0
     players, current_player_index = add_player(players, current_player_index)
