@@ -17,8 +17,8 @@ def enumerateplayers(players):
     log = ""
     for i, (v, k, c) in enumerate(players):
         conditions_str = ", ".join(c) if c else ""
-        print(f"{i+1} {v}: {k} \x1B[3m{conditions_str}\x1B[0m")
-        log += f"{i+1} {v}: {k} {conditions_str}\n"
+        print(f"{i+1}: {k} \x1B[3m{conditions_str}\x1B[0m")
+        log += f"{i+1} ({v}): {k} {conditions_str}\n"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"{timestamp}\n{log}\n"
     with open("initiative_log.txt", "a") as log_file:
@@ -34,7 +34,7 @@ def saved_encounter(enemies_list):
         while True:
             print("\nSaved encounters:")
             for i, game in enumerate(games):
-                print(f"{i+1} {game[0]}")   
+                print(f"{i+1}. {game[0]}")   
             try:
                 choose = int(input("\nChoose a saved game: "))
                 use = input(f"Use {games[choose-1][0]}? y/n or e(x)it: ")
@@ -43,9 +43,9 @@ def saved_encounter(enemies_list):
                     for enemy in enemies:
                         new_enemy = (enemy[0], enemy[1] + randint(1, 20), [])
                         enemies_list.append(new_enemy)
-                    enemies_list.sort(key=lambda i:i[1], reverse=True)
                     print("\nAdded enemies:")
-                    enumerateplayers(enemies_list)
+                    for i, (e,k,c) in enumerate(enemies_list):
+                        print(f"{i+1}. {e}")
                     return enemies_list
                 if use == "n":
                     continue
