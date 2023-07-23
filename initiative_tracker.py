@@ -17,8 +17,8 @@ def enumerateplayers(players):
     log = ""
     for i, (v, k, c) in enumerate(players):
         conditions_str = ", ".join(c) if c else ""
-        print(f"{i+1}: {k} \x1B[3m{conditions_str}\x1B[0m")
-        log += f"{i+1} ({v}): {k} {conditions_str}\n"
+        print(f"{i+1} {v}: ({k}) \x1B[3m{conditions_str}\x1B[0m")
+        log += f"{i+1} {v}: ({k}) {conditions_str}\n"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"{timestamp}\n{log}\n"
     with open("initiative_log.txt", "a") as log_file:
