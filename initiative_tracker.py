@@ -228,11 +228,12 @@ def init_order(players, current_player_index):
             input("\n\n...")
             return
         animated(f"Round {round}")
-        print(f"\n\033[92mCurrent turn: \033[92m{players[current_player_index][0]}\033[0m")
+        conditions_str = ", ".join(players[current_player_index][2]) if players[current_player_index][2] else ""
+        print(f"\n\033[92mCurrent turn: \033[92m{players[current_player_index][0]}\033[0m \x1B[3m{conditions_str}\x1B[0m")
         print(f"\n\033[38;5;208m{players[next_player_index][0]} \033[38;5;208mis next.\033[0m")
         try:
-            next = input("\nPress enter for next combatant\nOr, add or remove a (p)layer, add or remove a (c)ondition, or e(x)it: ")
-            if next == "":
+            next = input("\n(n)ext combatant...\nOr, add or remove a (p)layer, add or remove a (c)ondition, or e(x)it: ")
+            if next == "n":
                 round+=1
                 current_player_index += 1
                 if current_player_index >= len(players):
